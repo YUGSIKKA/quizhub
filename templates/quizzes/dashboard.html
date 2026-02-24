@@ -559,7 +559,7 @@
         </div>
         <p class="mb-2 opacity-75">Overall Progress</p>
         <div class="progress-bar-custom">
-            <div class="progress-fill" style="width: {{ avg_score }}%;"></div>
+            <div class="progress-fill" style="width: {{ avg_score|default:0 }}%;"></div>
         </div>
         <div class="d-flex justify-content-between mt-2 opacity-75" style="font-size: 0.8rem;">
             <span>Started: {{ total_quizzes }} quizzes</span>
