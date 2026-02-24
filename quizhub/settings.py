@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8s1y(0z9sil)zdj9&4o-uhb1*%s34vy50%g_z0r8p6_&nq)!fn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,3 +125,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
