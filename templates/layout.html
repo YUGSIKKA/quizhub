@@ -1,0 +1,16 @@
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="bg-dark text-white p-3" style="width:250px; min-height:100vh;">
+        <h4>QuizHub</h4>
+        <hr>
+        <a href="/dashboard/" class="text-white d-block mb-2">Dashboard</a>
+        <a href="/create-quiz/" class="text-white d-block mb-2">Create</a>
+        <a href="/my-quizzes/" class="text-white d-block mb-2">My Library</a>
+        <a href="/sessions/" class="text-white d-block mb-2">Sessions</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-fill p-4">
+        {% block content %}{% endblock %}
+    </div>
+</div>

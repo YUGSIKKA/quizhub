@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    /* Analytics Page Styles */
+    .analytics-header {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .analytics-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+    
+    .analytics-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+    }
+    
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .stat-icon.primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    .stat-icon.success {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        color: white;
+    }
+    
+    .stat-icon.warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+    
+    .stat-icon.info {
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        color: white;
+    }
+    
+    .stat-card h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .stat-card p {
+        color: #888;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .chart-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: none;
+    }
+    
+    .chart-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .chart-title i {
+        color: #11998e;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+    
+    .quick-action-btn {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .quick-action-btn:hover {
+        background: white;
+        color: #11998e;
+        transform: translateY(-3px);
+    }
+    
+    /* Section Title */
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        color: #11998e;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .empty-state-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #11998e20, #38ef7d20);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .empty-state-icon i {
+        font-size: 2.5rem;
+        color: #11998e;
+    }
+</style>
+
+<div class="container-fluid px-4">
+    <!-- Analytics Header -->
+    <div class="analytics-header">
+        <div class="header-content">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="mb-1">Analytics 📊</h2>
+                    <p class="mb-0 opacity-75">Track your quiz performance and student progress!</p>
+                </div>
+                <div class="quick-actions">
+                    <a href="{% url 'dashboard' %}" class="quick-action-btn">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="{% url 'sessions' %}" class="quick-action-btn">
+                        <i class="bi bi-list-check"></i> Sessions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+                <h3>{{ total_quizzes|default:0 }}</h3>
+                <p>Total Quizzes</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="bi bi-question-circle"></i>
+                </div>
+                <h3>{{ total_questions|default:0 }}</h3>
+                <p>Total Questions</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h3>{{ total_attempts|default:0 }}</h3>
+                <p>Total Attempts</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon info">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h3>{{ avg_score|default:0 }}%</h3>
+                <p>Average Score</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="bi bi-bar-chart"></i>
+                    Quiz Statistics Overview
+                </h3>
+                <canvas id="quizChart" height="300"></canvas>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="bi bi-pie-chart"></i>
+                    Performance Breakdown
+                </h3>
+                <canvas id="performanceChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Stats -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="bi bi-bookmark"></i>
+                    Subject Distribution
+                </h3>
+                <canvas id="subjectChart" height="250"></canvas>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="bi bi-clock-history"></i>
+                    Recent Activity
+                </h3>
+                <div class="d-flex flex-column gap-3">
+                    {% if recent_attempts %}
+                        {% for attempt in recent_attempts|slice:":5" %}
+                        <div class="d-flex align-items-center gap-3 p-3" style="background: #f8f9fa; border-radius: 15px;">
+                            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #11998e, #38ef7d); color: white; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0" style="font-size: 0.9rem;">{{ attempt.user.username }}</h6>
+                                <small class="text-muted">{{ attempt.quiz.title }}</small>
+                            </div>
+                            <span class="badge" style="background: {% if attempt.percentage >= 70 %}#10b981{% elif attempt.percentage >= 40 %}#f59e0b{% else %}#ef4444{% endif %}; color: white; padding: 5px 12px; border-radius: 15px;">
+                                {{ attempt.percentage|floatformat:0 }}%
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-4">No recent activity</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Quiz Statistics Chart
+    const ctx = document.getElementById('quizChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Quizzes', 'Total Questions', 'Total Attempts'],
+                datasets: [{
+                    label: 'Statistics',
+                    data: [
+                        {{ total_quizzes|default:0 }}, 
+                        {{ total_questions|default:0 }}, 
+                        {{ total_attempts|default:0 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(118, 75, 162, 0.8)',
+                        'rgba(17, 153, 142, 0.8)'
+                    ],
+                    borderColor: [
+                        '#667eea',
+                        '#764ba2',
+                        '#11998e'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Performance Chart
+    const perfCtx = document.getElementById('performanceChart');
+    if (perfCtx) {
+        new Chart(perfCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Excellent (70%+)', 'Good (40-70%)', 'Needs Improvement (<40%)'],
+                datasets: [{
+                    data: [
+                        {{ excellent_count|default:0 }},
+                        {{ good_count|default:0 }},
+                        {{ needs_improvement_count|default:0 }}
+                    ],
+                    backgroundColor: [
+                        '#10b981',
+                        '#f59e0b',
+                        '#ef4444'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+    
+    // Subject Distribution Chart
+    const subjectCtx = document.getElementById('subjectChart');
+    if (subjectCtx) {
+        new Chart(subjectCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ subject_labels|safe|default:"[]" }},
+                datasets: [{
+                    data: {{ subject_counts|safe|default:"[]" }},
+                    backgroundColor: [
+                        '#667eea',
+                        '#764ba2',
+                        '#11998e',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#06b6d4'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

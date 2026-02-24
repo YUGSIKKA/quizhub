@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .result-container { max-width: 600px; margin: 0 auto; }
+    .result-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+    .result-header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 40px; text-align: center; }
+    .score-circle { width: 150px; height: 150px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .score-value { font-size: 2.5rem; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .result-body { padding: 30px; }
+    .result-stat { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+    .result-stat:last-child { border-bottom: none; }
+    .stat-label { color: #666; font-weight: 500; }
+    .stat-value { font-weight: bold; color: #333; }
+    .btn-home { background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 30px; border-radius: 25px; }
+    .btn-home:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+    .celebration { font-size: 3rem; margin-bottom: 10px; }
+</style>
+
+<div class="container mt-5 result-container">
+    <div class="result-card">
+        <div class="result-header">
+            <div class="celebration">
+                {% if attempt.percentage >= 80 %}🎉{% elif attempt.percentage >= 60 %}👏{% else %}💪{% endif %}
+            </div>
+            <h2>Quiz Complete!</h2>
+            <p class="mb-0">{{ attempt.quiz.title }}</p>
+        </div>
+        
+        <div class="result-body">
+            <div class="score-circle">
+                <div class="score-value">{{ attempt.percentage|floatformat:0 }}%</div>
+            </div>
+            
+            <div class="result-stat">
+                <span class="stat-label">Score</span>
+                <span class="stat-value">{{ attempt.score }} / {{ attempt.total }}</span>
+            </div>
+            
+            <div class="result-stat">
+                <span class="stat-label">Time Taken</span>
+                <span class="stat-value">{{ attempt.time_taken }} seconds</span>
+            </div>
+            
+            <div class="result-stat">
+                <span class="stat-label">Subject</span>
+                <span class="stat-value">{{ attempt.quiz.subject }}</span>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-home">
+                    <i class="bi bi-house"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

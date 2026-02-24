@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 60px 0;
+        border-radius: 0 0 50px 50px;
+        margin-bottom: 40px;
+    }
+    
+    .hero-title {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .hero-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
+    
+    .hero-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+    
+    .hero-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .hero-card i {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-card h5 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .hero-card p {
+        color: #666;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+    
+    .search-wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .search-wrapper .form-control {
+        border-radius: 50px;
+        padding: 15px 25px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    
+    .search-wrapper .btn {
+        border-radius: 50px;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 25px;
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 70%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 2px;
+    }
+    
+    .resource-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .resource-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .resource-card h5 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .resource-card p {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .resource-card .btn {
+        border-radius: 20px;
+        padding: 8px 20px;
+    }
+    
+    .welcome-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .welcome-card h1 {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    
+    .welcome-card .btn {
+        border-radius: 25px;
+        padding: 12px 35px;
+        margin: 5px;
+        font-weight: 600;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a6fd6, #6a4190);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        border: none;
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #0f8a80, #32d76d);
+    }
+</style>
+
+<section class="hero-section text-center">
+    <div class="container py-4">
+        <h1 class="hero-title">Welcome to QuizHub 🎓</h1>
+        <p class="hero-subtitle">Test your knowledge, create quizzes, and track your progress</p>
+
+        <div class="row justify-content-center mb-4 g-3">
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                    <div class="hero-card">
+                        <i class="bi bi-journal-check"></i>
+                        <h5>Take a Quiz</h5>
+                        <p class="text-muted">Test your knowledge</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="{% url 'create_quiz' %}" class="text-decoration-none">
+                    <div class="hero-card">
+                        <i class="bi bi-plus-circle"></i>
+                        <h5>Create Quiz</h5>
+                        <p class="text-muted">Make your own quiz</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="{% url 'upload' %}" class="text-decoration-none">
+                    <div class="hero-card">
+                        <i class="bi bi-upload"></i>
+                        <h5>Upload</h5>
+                        <p class="text-muted">Share resources</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="{% url 'search' %}" class="text-decoration-none">
+                    <div class="hero-card">
+                        <i class="bi bi-search"></i>
+                        <h5>Search</h5>
+                        <p class="text-muted">Find content</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+            <form method="GET" action="{% url 'search' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search for quizzes, resources, topics...">
+                    <button class="btn btn-light" type="submit">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% if resources %}
+<div class="container mt-5">
+    <h3 class="section-title">Latest Resources</h3>
+    <div class="row g-4">
+        {% for item in resources %}
+        <div class="col-md-6 col-lg-4">
+            <div class="resource-card">
+                <h5>{{ item.title }}</h5>
+                <p>{{ item.description|truncatechars:100 }}</p>
+                {% if item.file %}
+                <a href="{{ item.file.url }}" target="_blank" class="btn btn-primary btn-sm">
+                    <i class="bi bi-download"></i> Download
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="container mt-5 mb-5">
+    <div class="welcome-card">
+        <h1>Start Your Learning Journey</h1>
+        {% if not request.user.is_authenticated %}
+            <p class="text-muted mb-4">Join thousands of learners and educators on QuizHub</p>
+            <a href="{% url 'login' %}" class="btn btn-success">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+            <a href="{% url 'register' %}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Register
+            </a>
+        {% else %}
+            <p class="text-muted mb-4">Welcome back, <strong>{{ request.user.username }}</strong>!</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                <i class="bi bi-journal-check"></i> Go to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

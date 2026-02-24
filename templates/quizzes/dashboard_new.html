@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    /* Enhanced Dashboard Styles */
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+    
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+    }
+    
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stats-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .stat-card {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        background: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+    
+    .stat-info h4 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .stat-info p {
+        margin: 0;
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+    
+    .search-box {
+        background: white;
+        border-radius: 15px;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    
+    .search-box input {
+        border: none;
+        outline: none;
+        width: 250px;
+        font-size: 0.95rem;
+    }
+    
+    .search-box i {
+        color: #667eea;
+    }
+    
+    /* Quiz Cards - Enhanced */
+    .quiz-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: none;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    
+    .quiz-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.25);
+    }
+    
+    .quiz-card-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 25px;
+        position: relative;
+    }
+    
+    .quiz-card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+        background-size: 80px;
+        opacity: 0.5;
+    }
+    
+    .quiz-card-header .card-title {
+        position: relative;
+        z-index: 1;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .quiz-badge {
+        background: rgba(255,255,255,0.25);
+        backdrop-filter: blur(5px);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .quiz-card-body {
+        padding: 25px;
+    }
+    
+    .quiz-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    .quiz-meta {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .quiz-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: #888;
+    }
+    
+    .quiz-meta-item i {
+        color: #667eea;
+        font-size: 1rem;
+    }
+    
+    .start-quiz-btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .start-quiz-btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Empty State - Enhanced */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .empty-state-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #667eea20, #764ba220);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+    }
+    
+    .empty-state-icon i {
+        font-size: 3rem;
+        color: #667eea;
+    }
+    
+    .empty-state h4 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+        color: #888;
+        margin-bottom: 25px;
+    }
+    
+    /* Filter Pills */
+    .filter-pills {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-pill {
+        background: white;
+        border: 2px solid #e9ecef;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-pill:hover, .filter-pill.active {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-color: transparent;
+        color: white;
+    }
+    
+    /* Section Title */
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        color: #667eea;
+    }
+    
+    /* Animations */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .quiz-card {
+        animation: slideInUp 0.5s ease forwards;
+    }
+    
+    .quiz-card:nth-child(1) { animation-delay: 0.1s; }
+    .quiz-card:nth-child(2) { animation-delay: 0.2s; }
+    .quiz-card:nth-child(3) { animation-delay: 0.3s; }
+    .quiz-card:nth-child(4) { animation-delay: 0.4s; }
+    .quiz-card:nth-child(5) { animation-delay: 0.5s; }
+    .quiz-card:nth-child(6) { animation-delay: 0.6s; }
+</style>
+
+<div class="container-fluid px-4">
+    <!-- Enhanced Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="mb-1">Welcome back, {{ request.user.username }}!</h2>
+                    <p class="mb-0 opacity-75">Ready to test your knowledge? Let's ace those quizzes!</p>
+                </div>
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="quizSearch" placeholder="Search quizzes..." onkeyup="filterQuizzes()">
+                </div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-journal-bookmark-fill" style="color: #667eea;"></i></div>
+                    <div class="stat-info">
+                        <h4>{{ quizzes.count }}</h4>
+                        <p>Total Quizzes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-question-circle-fill" style="color: #764ba2;"></i></div>
+                    <div class="stat-info">
+                        <h4>15</h4>
+                        <p>Questions Available</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-clock-fill" style="color: #f5576c;"></i></div>
+                    <div class="stat-info">
+                        <h4>10 min</h4>
+                        <p>Avg Duration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Pills -->
+    <div class="filter-pills">
+        <span class="filter-pill active">All</span>
+        <span class="filter-pill">General</span>
+        <span class="filter-pill">Science</span>
+    </div>
+    
+    <!-- Section Title -->
+    <div class="section-title">
+        <i class="bi bi-journal-check"></i>
+        Available Quizzes
+    </div>
+
+    {% if quizzes %}
+        <div class="row" id="quizGrid">
+            {% for quiz in quizzes %}
+            <div class="col-md-6 col-lg-4 mb-4 quiz-item" data-subject="{{ quiz.subject }}" data-title="{{ quiz.title|lower }}">
+                <div class="quiz-card">
+                    <div class="quiz-card-header">
+                        <h5 class="card-title">{{ quiz.title }}</h5>
+                        <span class="quiz-badge">{{ quiz.subject }}</span>
+                    </div>
+                    <div class="quiz-card-body">
+                        <p class="quiz-description">{{ quiz.description|truncatechars:100 }}</p>
+                        <div class="quiz-meta">
+                            <div class="quiz-meta-item">
+                                <i class="bi bi-clock"></i>
+                                <span>{{ quiz.time_limit }} min</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <i class="bi bi-collection"></i>
+                                <span>{{ quiz.question_set.count }} Questions</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <i class="bi bi-bar-chart"></i>
+                                <span>{{ quiz.grade }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'attempt_quiz' quiz.id %}" class="btn btn-primary start-quiz-btn">
+                            <i class="bi bi-play-fill"></i> Start Quiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-journal-x"></i>
+            </div>
+            <h4>No quizzes available</h4>
+            <p>There are no quizzes to attempt right now. Create your first quiz!</p>
+            <a href="{% url 'create_quiz' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create Quiz
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function filterQuizzes() {
+    const searchInput = document.getElementById('quizSearch').value.toLowerCase();
+    const quizItems = document.querySelectorAll('.quiz-item');
+    
+    quizItems.forEach(item => {
+        const title = item.getAttribute('data-title');
+        if (title.includes(searchInput)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+</script>
+
+{% endblock %}

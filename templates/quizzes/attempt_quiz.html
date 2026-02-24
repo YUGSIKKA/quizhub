@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.qu max-width: iz-container {800px; margin: 0 auto; }
+.timer-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 25px; border-radius: 50px; display: inline-flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: bold; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+.timer-warning { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.question-card { background: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.question-number { color: #667eea; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+.question-text { font-size: 1.2rem; font-weight: 500; color: #333; margin-bottom: 20px; }
+.option-label { cursor: pointer; padding: 15px; border-radius: 12px; border: 2px solid #e9ecef; margin-bottom: 10px; transition: all 0.3s; display: block; }
+.option-label:hover { background: #f8f9fa; border-color: #667eea; }
+.option-selected { background: linear-gradient(135deg, #667eea20, #764ba220); border-color: #667eea; }
+.progress-bar-custom { height: 8px; background: #e9ecef; border-radius: 4px; margin-bottom: 30px; }
+.progress-bar-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; transition: width 0.3s ease; }
+.quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.submit-btn { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); border: none; padding: 14px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
+</style>
+
+<div class="container mt-4 quiz-container">
+    <div class="quiz-header">
+        <div class="title-section">
+            <h3>{{ quiz.title }}</h3>
+            <p class="text-muted">{{ quiz.description }}</p>
+        </div>
+        <div class="timer-card" id="timer">
+            <i class="bi bi-clock"></i>
+            <span id="time-display">{{ time_limit }}:00</span>
+        </div>
+    </div>
+
+    <div class="progress-bar-custom">
+        <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+    </div>
+
+    <form method="POST" id="quiz-form">
+        {% csrf_token %}
+        <input type="hidden" name="time_taken" id="time-taken" value="0">
+        
+        {% for question in questions %}
+        <div class="question-card" data-question="{{ forloop.counter }}">
+            <span class="question-number">Question {{ forloop.counter }} of {{ questions|length }}</span>
+            <h5 class="question-text">{{ question.text }}</h5>
+            
+            <label class="option-label">
+                <input type="radio" name="question_{{ question.id }}" value="1" style="display:none" onchange="updateProgress()">
+                <span>{{ question.option1 }}</span>
+            </label>
+            
+            <label class="option-label">
+                <input type="radio" name="question_{{ question.id }}" value="2" style="display:none" onchange="updateProgress()">
+                <span>{{ question.option2 }}</span>
+            </label>
+            
+            <label class="option-label">
+                <input type="radio" name="question_{{ question.id }}" value="3" style="display:none" onchange="updateProgress()">
+                <span>{{ question.option3 }}</span>
+            </label>
+            
+            <label class="option-label">
+                <input type="radio" name="question_{{ question.id }}" value="4" style="display:none" onchange="updateProgress()">
+                <span>{{ question.option4 }}</span>
+            </label>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mt-4 mb-5">
+            <button type="submit" class="btn submit-btn">
+                <i class="bi bi-check-circle"></i> Submit Quiz
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+var totalSeconds = {{ time_limit }} * 60;
+var startTime = Date.now();
+
+function updateTimer() {
+    var elapsed = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById('time-taken').value = elapsed;
+    
+    var remaining = totalSeconds - elapsed;
+    
+    if (remaining <= 60) {
+        document.getElementById('timer').classList.add('timer-warning');
+    }
+    
+    if (remaining <= 0) {
+        document.getElementById('quiz-form').submit();
+        return;
+    }
+    
+    var mins = Math.floor(remaining / 60);
+    var secs = remaining % 60;
+    document.getElementById('time-display').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+}
+
+setInterval(updateTimer, 1000);
+
+function updateProgress() {
+    var totalQuestions = {{ questions|length }};
+    var answered = 0;
+    var inputs = document.querySelectorAll('input[type="radio"]:checked');
+    answered = inputs.length;
+    var percent = (answered / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = percent + '%';
+}
+</script>
+{% endblock %}

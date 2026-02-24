@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Your Uploaded Resources</h2>
+
+    <!-- inline upload form -->
+    <div class="mb-4">
+        <h5>Add a new resource</h5>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-success" type="submit">Upload</button>
+        </form>
+    </div>
+
+    {% if resources %}
+        <ul class="list-group">
+            {% for item in resources %}
+                <li class="list-group-item">
+                    <h5>{{ item.title }}</h5>
+                    <p>{{ item.description }}</p>
+                    {% if item.file %}
+                        <a href="{{ item.file.url }}" target="_blank">Download</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't uploaded any resources yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .create-quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+    }
+    
+    .form-header {
+        margin-bottom: 25px;
+    }
+    
+    .form-header h3 {
+        color: #333;
+        font-weight: 600;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #ced4da;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    textarea.form-control {
+        min-height: 100px;
+    }
+    
+    .btn-create {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        padding: 12px 40px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s;
+    }
+    
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .question-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .question-number {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .remove-question-btn {
+        color: #dc3545;
+        cursor: pointer;
+    }
+    
+    .add-question-btn {
+        background: transparent;
+        border: 2px dashed #667eea;
+        color: #667eea;
+        padding: 15px;
+        border-radius: 12px;
+        width: 100%;
+        transition: all 0.3s;
+    }
+    
+    .add-question-btn:hover {
+        background: #667eea10;
+    }
+</style>
+
+<div class="container mt-4 create-quiz-container">
+    <div class="form-card">
+        <div class="form-header text-center">
+            <h3><i class="bi bi-plus-circle"></i> Create New Quiz</h3>
+            <p class="text-muted">Fill in the quiz details and add questions</p>
+        </div>
+        
+        <form method="POST" id="quiz-form">
+            {% csrf_token %}
+            
+            <!-- Quiz Details -->
+            <div class="mb-4">
+                <label class="form-label">Quiz Title</label>
+                <input type="text" name="title" class="form-control" placeholder="Enter quiz title" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" placeholder="Enter quiz description" required></textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Subject</label>
+                    <input type="text" name="subject" class="form-control" placeholder="e.g., Mathematics" value="General">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Grade</label>
+                    <input type="text" name="grade" class="form-control" placeholder="e.g., Grade 6" value="Grade 6">
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Time Limit (minutes)</label>
+                <input type="number" name="time_limit" class="form-control" placeholder="Enter time in minutes" value="10" min="1">
+            </div>
+            
+            <hr>
+            
+            <!-- Questions Section -->
+            <div class="mb-3">
+                <label class="form-label">Number of Questions</label>
+                <input type="number" id="num_questions" name="num_questions" class="form-control" value="1" min="1" max="50" onchange="updateQuestions()">
+            </div>
+            
+            <div id="questions-container">
+                <!-- Questions will be added here dynamically -->
+            </div>
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-create">
+                    <i class="bi bi-check-circle"></i> Create Quiz
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateQuestions() {
+    var numQuestions = parseInt(document.getElementById('num_questions').value);
+    var container = document.getElementById('questions-container');
+    var currentQuestions = container.querySelectorAll('.question-card').length;
+    
+    // Add new questions if needed
+    for (var i = currentQuestions; i < numQuestions; i++) {
+        addQuestion(i + 1);
+    }
+    
+    // Remove extra questions if needed
+    while (container.querySelectorAll('.question-card').length > numQuestions) {
+        container.removeChild(container.lastChild);
+    }
+}
+
+function addQuestion(questionNum) {
+    var container = document.getElementById('questions-container');
+    var questionHTML = `
+        <div class="question-card" id="question_${questionNum}">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="question-number">Question ${questionNum}</span>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Question Text</label>
+                <textarea name="question_${questionNum}" class="form-control" placeholder="Enter your question" required></textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Option 1</label>
+                    <input type="text" name="question_${questionNum}_option1" class="form-control" placeholder="Option 1" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Option 2</label>
+                    <input type="text" name="question_${questionNum}_option2" class="form-control" placeholder="Option 2" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Option 3</label>
+                    <input type="text" name="question_${questionNum}_option3" class="form-control" placeholder="Option 3" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Option 4</label>
+                    <input type="text" name="question_${questionNum}_option4" class="form-control" placeholder="Option 4" required>
+                </div>
+            </div>
+            
+            <div class="mb-2">
+                <label class="form-label">Correct Option</label>
+                <select name="question_${questionNum}_correct" class="form-select">
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <option value="4">Option 4</option>
+                </select>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', questionHTML);
+}
+
+// Initialize with 1 question
+document.addEventListener('DOMContentLoaded', function() {
+    updateQuestions();
+});
+</script>
+{% endblock %}
