@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8s1y(0z9sil)zdj9&4o-uhb1*%s34vy50%g_z0r8p6_&nq)!fn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+ALLOWED_HOSTS = ['quizhub-cn2r.onrender.com']
 
 ALLOWED_HOSTS = ['*']
 
