@@ -25,7 +25,18 @@ SECRET_KEY = 'django-insecure-8s1y(0z9sil)zdj9&4o-uhb1*%s34vy50%g_z0r8p6_&nq)!fn
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ['quizhub-cn2r.onrender.com']
+ALLOWED_HOSTS = [
+    "web-production-86e7.up.railway.app"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://web-production-86e7.up.railway.app"
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 ALLOWED_HOSTS = ['*']
 
